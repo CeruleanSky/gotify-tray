@@ -4,6 +4,7 @@ import os
 import sys
 import tempfile
 from typing import List, Union
+import gntp.notifier
 
 from gotify_tray import gotify
 from gotify_tray.__version__ import __title__
@@ -190,6 +191,22 @@ class MainApplication(QtWidgets.QApplication):
                 f"{self.gotify_client.url}/{application.image}"
             ),
         )
+        growl = gntp.notifier.GrowlNotifier(
+        applicationName = "gotify-tray",
+        notifications = ["New Updates","New Messages"],
+        defaultNotifications = ["New Messages"],
+        )
+        growl.register()
+        growl.notify(
+        noteType = "New Messages",
+        title = message['title'],
+        description = message['message'],
+        icon = f"{self.gotify_client.url}/{application.image}",
+        sticky = False,
+        priority = 1,
+        )
+
+
 
     def application_selection_changed_callback(
         self, item: Union[ApplicationModelItem, ApplicationAllMessagesItem]
